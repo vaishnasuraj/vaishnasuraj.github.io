@@ -1,0 +1,232 @@
+---
+title: "Walmart Sales Forecasting"
+author: "Vaishna Suraj"
+format: html
+editor: visual
+---
+
+### Business Understanding
+
+Walmart wants to improve demand forecasting for its stores. This project explores historical sales, promotional data, and store details to identify sales patterns and trends. The goal is to build insight toward improved forecasting.
+
+### Data Understanding
+
+Link to the dataset: <https://www.kaggle.com/datasets/aslanahmedov/walmart-sales-forecast?resource=download>
+
+We work with 3 datasets:
+
+\- train.xlsx: Weekly sales per store and department
+
+\- stores.xlsx: Store types and sizes
+
+\- features.xlsx: Data related to the store, department, and regional activity for the given dates.
+
+### Load libraries and Import data
+
+```{r}
+install.packages(c("readxl", "tidyverse", "lubridate"))
+
+library(readxl)
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+#Load datasets
+features <- read_excel("C:/Users/VAISHNA/Downloads/features.xlsx")
+stores <- read_excel("C:/Users/VAISHNA/Downloads/stores.xlsx")
+train <- read_excel("C:/Users/VAISHNA/Downloads/train.xlsx")
+```
+
+### Data Preparation
+
+```{r}
+# Convert Date to proper date format
+train$Date <- ymd(train$Date)
+features$Date <- ymd(features$Date)
+
+# Merge all datasets
+data_full <- train %>%
+  left_join(stores, by = "Store") %>%
+  left_join(features, by = c("Store", "Date"))
+
+# View sample
+head(data_full)
+```
+
+### Exploratory Data Analysis
+
+#### Sales by Store Type
+
+```{r}
+library(scales)  # for comma formatting
+
+data_full %>%
+  group_by(Type) %>%
+  summarise(Total_Sales = sum(Weekly_Sales)) %>%
+  ggplot(aes(x = Type, y = Total_Sales, fill = Type)) +
+  geom_col() +
+  labs(title = "Total Sales by Store Type", y = "Sales", x = "Store Type") +
+  scale_y_continuous(labels = comma)
+```
+
+#### Weekly Sales Trend ( Top Store)
+
+```{r}
+top_store <- data_full %>%
+  group_by(Store) %>%
+  summarise(Total_Sales = sum(Weekly_Sales)) %>%
+  slice_max(Total_Sales, n = 1) %>%
+  pull(Store)
+
+data_full %>%
+  filter(Store == top_store) %>%
+  group_by(Date) %>%
+  summarise(Sales = sum(Weekly_Sales)) %>%
+  ggplot(aes(x = Date, y = Sales)) +
+  geom_line(color = "#00bfc4") +
+  labs(title = paste("Sales Trend - Store", top_store), y = "Weekly Sales", x = "Date")
+```
+
+### Find top and bottom stores
+
+```{r}
+store_summary <- data_full %>%
+  group_by(Store) %>%
+  summarise(Total_Sales = sum(Weekly_Sales, na.rm = TRUE)) %>%
+  arrange(desc(Total_Sales))
+
+store_summary
+```
+
+#### **Sales Comparison: Store 20 vs. Second best store ie 4**
+
+Compare Store 20’s weekly sales trend with store 4
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(scales)  # for comma formatting
+
+# Filter for Store 20 and Store 4
+comparison_stores <- data_full %>%
+  filter(Store %in% c(20, 4))
+
+# Plot with readable Y-axis labels
+ggplot(comparison_stores, aes(x = Date, y = Weekly_Sales, color = as.factor(Store))) +
+  geom_line() +
+  labs(
+    title = "Weekly Sales: Store 20 vs Store 4",
+    x = "Date",
+    y = "Weekly Sales",
+    color = "Store"
+  ) +
+  scale_y_continuous(labels = comma) +  # 👈 this formats numbers
+  theme_minimal()
+```
+
+### Insight Summary
+
+The comparison between Store 20 and Store 4 reveals consistent outperformance by Store 20 across most weeks. While both stores exhibit similar seasonal patterns and holiday spikes, Store 20 maintains higher weekly sales throughout the year. This suggests superior foot traffic, promotional effectiveness, or local market demand. The close performance of Store 4 also positions it as a potential benchmark store for best practices replication across the Walmart network.
+
+### Holiday Impact on Store 20 Sales
+
+We'll now check how holidays affect weekly sales for Store 20. This is important because holiday promotions or demand spikes are key insights for any retail business.
+
+```{r}
+#Merge datasets
+data_full <- train %>%
+  left_join(features, by = c("Store", "Date")) %>%
+  left_join(stores, by = "Store")
+
+#Rename column to avoid confusion
+data_full <- data_full %>%
+  rename(IsHoliday = IsHoliday.x)  # Keep IsHoliday from train
+
+#Filter for Store 20
+store20 <- data_full %>% filter(Store == 20)
+
+#Check if it worked (optional)
+nrow(store20)  # should be > 0
+
+#Convert IsHoliday to factor
+store20$IsHoliday <- as.factor(store20$IsHoliday)
+
+#Create the plot
+ggplot(store20, aes(x = Date, y = Weekly_Sales, color = IsHoliday)) +
+  geom_line() +
+  labs(
+    title = "Sales Trend for Store 20: Holiday vs Non-Holiday",
+    x = "Date",
+    y = "Weekly Sales",
+    color = "Holiday"
+  ) +
+  scale_y_continuous(labels = comma) +
+  theme_minimal()
+```
+
+#### Insight Summary
+
+The sales trend for Store 20 shows a clear pattern of higher sales during holiday weeks. While regular weeks maintain consistent weekly sales, holiday periods especially around major events like Thanksgiving and Christmas that lead to noticeable spikes, sometimes exceeding \$400,000. This indicates that Store 20 significantly benefits from holiday-driven consumer behavior.
+
+### Department Level Performance Analysis for Store 20
+
+```{r}
+# Filter data for Store 20
+store20_data <- data_full %>%
+  filter(Store == 20)
+
+# Summarize total sales by Department
+dept_sales <- store20_data %>%
+  group_by(Dept) %>%
+  summarise(Total_Sales = sum(Weekly_Sales, na.rm = TRUE)) %>%
+  arrange(desc(Total_Sales))
+
+#Lets filter out top 10 departments
+top_n <- 10
+
+dept_sales_top <- dept_sales %>%
+  slice_max(order_by = Total_Sales, n = top_n)
+
+#Create the plot
+ggplot(dept_sales_top, aes(x = reorder(as.factor(Dept), -Total_Sales), y = Total_Sales)) +
+  geom_bar(stat = "identity", fill = "#1f77b4") +
+  labs(title = paste("Top", top_n, "Departments by Total Sales for Store 20"),
+       x = "Department",
+       y = "Total Sales") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = scales::comma)
+
+```
+
+#### Insight Summary
+
+The analysis reveals that Department 92 is the highest revenue-generating department in Store 20, followed closely by Departments 95 and 38. These three departments significantly outperform others in terms of total sales. This insight can help Walmart prioritize inventory and promotions in these high-performing departments to further optimize revenue.
+
+### Overall Summary
+
+This project provides a data-driven analysis of Walmart’s retail performance using the "Walmart Sales Forecasting- A CRISP-DM Model" dataset from Kaggle. Focusing on Store 20, the top-performing store, we explored weekly sales trends, holiday vs. non-holiday effects, and department-level performance using R and tidyverse libraries.
+
+Key insights
+
+-   Store 20 consistently outperforms others in weekly sales, showing stable upward trends.
+
+-   Holiday periods show significant spikes, confirming the influence of festive seasons on sales.
+
+-   Departments 92, 95, and 38 are the strongest contributors to Store 20's revenue, offering key opportunities for sales optimization.
+
+Recommendations
+
+From a business analytics and strategy perspective, the following recommendations are derived:
+
+1.  Optimize Inventory in High-Performing Departments: Since Departments 92, 95, and 38 bring in the most money, Walmart should make sure these are always well-stocked and promoted.
+
+2.  Leverage Holiday Sales Strategically: Plan holiday-specific marketing campaigns and stock levels well in advance to capture increased demand, especially during spikes in November–December.
+
+3.  Replicate Store 20's Strategies in Other Stores: Analyze operational patterns in Store 20 and apply its best practices to second-tier stores to elevate their performance.
+
+4.  Monitor Under-performing Departments: Investigate departments with low sales to understand whether it's a demand issue, product mix problem, or operational inefficiency.
+
+5.  Integrate Predictive Forecasting: Introduce time-series forecasting models like Prophet or ARIMA to anticipate future sales and adjust logistics proactively.
