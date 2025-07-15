@@ -3,63 +3,142 @@
 <head>
   <meta charset="UTF-8">
   <title>Vaishna Suraj | Data & Business Analytics Portfolio</title>
-  <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap">
   <style>
-    body { max-width: 900px; margin: auto; padding: 20px; font-family: Arial, sans-serif; }
-    header, footer { text-align: center; }
-    img { border-radius: 50%; width: 140px; margin-top: 20px; }
-    h1, h2, h3 { color: #2a2a2a; }
-    a { color: #007acc; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .social-links a { margin: 0 10px; font-weight: bold; }
-    section { margin-top: 40px; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f7f9fb;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    header img {
+      width: 130px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    h3 {
+      font-weight: normal;
+      color: #555;
+      margin-top: 0;
+    }
+    .section {
+      margin-bottom: 50px;
+    }
+    .section h2 {
+      color: #2a2a2a;
+      border-bottom: 2px solid #007acc;
+      padding-bottom: 5px;
+    }
+    .project-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .project-card h3 {
+      margin-top: 0;
+    }
+    .btn {
+      background-color: #007acc;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 5px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #005f99;
+    }
+    .social-links {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .social-links a {
+      margin: 0 10px;
+      font-weight: 600;
+      color: #007acc;
+      text-decoration: none;
+    }
+    footer {
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+      padding-top: 20px;
+    }
   </style>
 </head>
-
 <body>
+  <div class="container">
 
   <header>
     <img src="Vaishna Suraj Pic.jpg" alt="Vaishna Suraj Photo" width="200" style="border-radius: 50%;">
     <h1>Vaishna Suraj</h1>
     <h3>Analytics Enthusiast | Aspiring Consultant | NUIG Graduate</h3>
-    <p>I'm a Business Analytics graduate passionate about solving real-world problems using data. With a solid foundation in <strong>R, Python, Tableau, Excel, and SQL</strong>, I specialize in translating data into strategies across finance, retail, and consulting domains. I'm currently seeking entry-level roles in <strong>data analytics, business analysis, or consulting</strong> where I can deliver impact through insight.</p>
+    <p>Passionate about turning data into decisions. With hands-on experience in financial forecasting, retail analytics, and customer segmentation, I use tools like R, Python, Tableau, and Excel to solve real-world business challenges. I'm currently seeking entry-level roles in <strong>data analytics, business analysis, or consulting</strong> where I can deliver impact through insight.</p>
 
     <div class="social-links">
-      🌐 <a href="https://github.com/vaishnasuraj" target="_blank">GitHub</a> |
-      🔗 <a href="https://www.linkedin.com/in/your-linkedin-id" target="_blank">LinkedIn</a> |
+      🔗 <a href="www.linkedin.com/in/vaishna-suraj-32827b262" target="_blank">LinkedIn</a> |
       📊 <a href="https://public.tableau.com/app/profile/vaishna.suraj6434/viz/CV_17410092073160/Dashboard1" target="_blank">Interactive Tableau CV</a>
     </div>
   </header>
 
-  <section>
+  <div class="section">
     <h2>📁 Portfolio Projects</h2>
-
+    <div class="project-card">
    <h3>🔹 1. Tesla Stock Price Forecasting (Finance)</h3>
-    <p><strong>Tools:</strong> R, Prophet, ARIMA</p>
-    <p>Built a stock forecasting model for Tesla using time series techniques. Applied ARIMA and Prophet to uncover price trends and generate financial insights.</p>
+   <h3>📊 Tesla Stock Price Forecasting using R (Finance)</h3>
+  <p>Forecasted Tesla’s next 90-day stock trend using historical data from January 2020 to December 2024. The model was built using <strong>R, quantmod, prophet, dplyr, ggplot2, and lubridate</strong>.</p>
+  <p>The Prophet model revealed a strong upward trend until 2022, a dip around 2023, and a steady recovery by late 2024—mirroring real-world market volatility. Weekly seasonality showed higher activity on weekends and lower volume midweek, while yearly seasonality showed consistent peaks in January and December, and dips around July.</p>
+  <p>This project demonstrates my ability to apply time series forecasting and interpret seasonality patterns that support strategic financial planning and investment analysis.</p>
     <p><a href="https://raw.githubusercontent.com/vaishnasuraj/vaishnasuraj.github.io/master/tesla_forecast.R" target="_blank">🔗 View R Script (Download or Open in RStudio)</a></p>
+    </div>
 
+     <div class="project-card">
     <h3>🔹 2. Walmart Retail Sales Forecasting (Data)</h3>
     <p><strong>Tools:</strong> R, Quarto, ggplot2</p>
-    <p>Analyzed Walmart’s sales using CRISP-DM methodology. Forecasted seasonal trends and compared store performance. Delivered results using a Quarto (.qmd) file.</p>
+  <p>Performed exploratory and comparative analysis on Walmart’s sales data using <strong>R, Quarto, dplyr, ggplot2, and readxl</strong>. Merged datasets from features, stores, and transactions to build a consolidated view of weekly and store-level performance.</p>
+  <p>Store 20 emerged as the highest performing, followed by Store 4. Visual analysis captured seasonal patterns, holiday impact, and department-level insights. Markdown-related promotions were evaluated for their effect on weekly sales spikes.</p>
+  <p>The project was documented and presented using Quarto, emphasizing clean storytelling, modular code, and visual dashboards — simulating a retail analytics reporting scenario.</p>
+  <a href="https://raw.githubusercontent.com/vaishnasuraj/vaishnasuraj.github.io/master/walmart_forecast.qmd" class="btn" target="_blank">View Quarto File</a>
     <p><a href="https://raw.githubusercontent.com/vaishnasuraj/vaishnasuraj.github.io/master/walmart_forecast.qmd" target="_blank">🔗 View Quarto File (View or Render in RStudio)</a></p>
+    </div>
 
+     <div class="project-card">
     <h3>🔹 3. Customer Segmentation (Consulting)</h3>
-    <p><strong>Tools:</strong> Python, KMeans, PCA, Colab</p>
-    <p>Segmented retail customers using clustering techniques. Built actionable customer groups for marketing strategy — a consulting-style use case built in Python.</p>
+  <p>Executed a consulting-style customer segmentation analysis using <strong>Python, Pandas, scikit-learn, Matplotlib, and Seaborn</strong>. Focused on clustering customers based on their annual income and spending patterns.</p>
+  <p>Used the Elbow Method and Silhouette Score to determine the optimal number of segments. Applied KMeans and visualized clusters to uncover high-value customer groups for targeted marketing strategies.</p>
+  <p>This project simulated a real-world consulting engagement by translating raw data into strategic recommendations for customer personalization and engagement.</p>
     <p><a href="https://github.com/vaishnasuraj/vaishnasuraj.github.io/blob/master/customer_segmentation.ipynb" target="_blank">🔗 Open in Google Colab</a></p>
-  </section>
-
-  <section>
+  </div>
+    </div>
+    
+    <div class="section">
     <h2>📈 Tableau Interactive CV (2025)</h2>
     <p>This interactive dashboard was developed as part of an academic assignment during my master's coursework in early 2025. It visually presents my academic and project experience, key tools, and professional background.</p>
     <p><a href="https://public.tableau.com/app/profile/vaishna.suraj6434/viz/CV_17410092073160/Dashboard1" target="_blank">🔗 View Tableau CV</a></p>
-  </section>
+  </div>
 
   <footer>
-    <p>📩 Reach me at: <strong>vaishnasuraj2002@email.com</strong></p>
-    <p>© 2025 Vaishna Suraj</p>
-  </footer>
+      <p>📫 Contact: vaishnasuraj@email.com</p>
+      <p>© 2025 Vaishna Suraj</p>
+    </footer>
 
+  </div>
 </body>
 </html>
